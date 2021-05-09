@@ -63,8 +63,8 @@ class LocationPage(driver: WebDriver) : AbstractPage(driver) {
 
     private fun fillCodeField(index: Int, code: String) {
         codeField(index)?.click()
-        sendKeys(codeField(index), code)
-        //(index)?.sendKeys(code)
+        //sendKeys(codeField(index), code)
+        codeField(index)?.sendKeys(code)
     }
 
     fun enterCodeSegment0(code: String) = fillCodeField(0, code)
