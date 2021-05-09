@@ -17,7 +17,7 @@ fun main() {
     val slackClient = SlackClient()
 
     slackClient.listChannelIds() // only needed once to find the channel id
-    //slackClient.joinChannel("CE728N1PY") // only needed once
+    //slackClient.joinChannel("CMXCDLJ9J") // only needed once
 
     //slackClient.testConnection() // not needed - only for testing
 }
