@@ -47,7 +47,7 @@ RUN cat /root/.vnc/xstartup
 
 RUN mv /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 
-RUN echo "#!/bin/bash\necho -n \${VNC_PASSWORD:-impf-bot} | vncpasswd -f > /root/.vnc/passwd\nchmod 400 ~/.vnc/passwd\n\nexport USER=root\n#vncserver :1 -geometry 1920x1080 -depth 24 && websockify -D --web=/usr/share/novnc/ 6901 localhost:5901\ntail -f /app/impflog" > /root/vnc-startup.sh
+RUN echo "#!/bin/bash\necho -n \${VNC_PASSWORD:-impf-bot} | vncpasswd -f > /root/.vnc/passwd\nchmod 400 ~/.vnc/passwd\n\nexport USER=root\nvnc4server :1 -geometry 1920x1080 -depth 24 && websockify -D --web=/usr/share/novnc/ 6901 localhost:5901\ntail -f /app/impflog" > /root/vnc-startup.sh
 RUN chmod +x /root/vnc-startup.sh
 
 RUN cat /root/vnc-startup.sh
