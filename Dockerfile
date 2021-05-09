@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN apt-get update -y
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y unzip wget git default-jdk chromium=90.0.4430.93-1~deb10u1 xorg tightvncserver autocutsel lxde-core novnc python-websockify 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y unzip wget git default-jdk chromium=90.0.4430.93-1~deb10u1 xorg vnc4server autocutsel lxde-core novnc python-websockify xfce4 xfce4-goodies
 
 RUN wget https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip
 
@@ -18,11 +18,13 @@ RUN unzip -d /opt/gradle /tmp/gradle-7.0-bin.zip
 
 RUN rm -rf /tmp/gradle-7.0-bin.zip
 
-RUN git clone https://github.com/TobseF/impf-bot.git
+#RUN git clone https://github.com/TobseF/impf-bot.git
 
-RUN mv impf-bot/* .
+COPY . .
 
-RUN rm -rf impf-bot/
+#RUN mv impf-bot/* .
+
+#RUN rm -rf impf-bot/
 
 RUN sed -i -e 's/\ \ \ \ val\ chromeDriver\ =\ ChromeDriver(chromeOptions)/\ \ \ \ System.setProperty("webdriver.chrome.whitelistedIps", "");\n\ \ \ \ chromeOptions.addArguments\("--no-sandbox"\);\n\ \ \ \ chromeOptions.addArguments\("--disable-dev-shm-usage"\);\n\ \ \ \ val\ chromeDriver\ =\ ChromeDriver\(chromeOptions\)/g' src/main/kotlin/de/tfr/impf/selenium/DriverFactory.kt
 
@@ -45,7 +47,7 @@ RUN cat /root/.vnc/xstartup
 
 RUN mv /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 
-RUN echo "#!/bin/bash\necho -n \${VNC_PASSWORD:-impf-bot} | vncpasswd -f > /root/.vnc/passwd\nchmod 400 ~/.vnc/passwd\n\nexport USER=root\nvncserver :1 -geometry 1920x1080 -depth 24 && websockify -D --web=/usr/share/novnc/ 6901 localhost:5901\ntail -f /app/impflog" > /root/vnc-startup.sh
+RUN echo "#!/bin/bash\necho -n \${VNC_PASSWORD:-impf-bot} | vncpasswd -f > /root/.vnc/passwd\nchmod 400 ~/.vnc/passwd\n\nexport USER=root\n#vncserver :1 -geometry 1920x1080 -depth 24 && websockify -D --web=/usr/share/novnc/ 6901 localhost:5901\ntail -f /app/impflog" > /root/vnc-startup.sh
 RUN chmod +x /root/vnc-startup.sh
 
 RUN cat /root/vnc-startup.sh
