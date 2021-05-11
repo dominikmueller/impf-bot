@@ -12,8 +12,17 @@ fun createDriver(): ChromeDriver {
     if (Config.hasUserAgent) {
         chromeOptions.addArguments("general.useragent.override", Config.userAgent)
     }
+    // Mitigate Bot Detection
+    chromeOptions.addArguments("--disable-blink-features=AutomationControlled")
+    chromeOptions.setExperimentalOption("excludeSwitches", Array<String>(1){"enable-automation"})
+    chromeOptions.setExperimentalOption("useAutomationExtension", false)
+
     val chromeDriver = ChromeDriver(chromeOptions)
     chromeDriver.setTimeOut(Config.searchElementTimeout())
+
+    // Mitigate Bot Detection
+    chromeDriver.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
     return chromeDriver
 }
 
