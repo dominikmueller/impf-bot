@@ -21,7 +21,13 @@ class ReportJob {
     private val mobileNumber = Config.mobileNumber
     private val email = Config.email
 
+    fun initialize() {
+        log.info { "Sending test-messages to all valid notification methods" }
+        sendMessage("Impf-Bot started!")
+    }
+
     fun reportFreeSlots() {
+        initialize()
         log.info { "Person age: $personAge" }
         log.info { "Started checking these ${locations.size} locations:\n$locations" }
         while (true) {
@@ -164,7 +170,7 @@ class ReportJob {
 
 
     private fun sendMessageFoundFreeSeats(location: Config.Location) {
-        val message = "Found free seats in location ${location.name}:${driver.currentUrl}" +
+        val message = "Found free seats in location ${location.name}:${driver.currentUrl}\n" +
                 "Five minutes left to send the sms verification"
         sendMessage(message)
     }
@@ -179,7 +185,8 @@ class ReportJob {
         log.info { message }
         if (Config.isSlackEnabled()) {
             SlackClient().sendMessage(message)
-        } else if (Config.isTelegramEnabled()){
+        }
+        if (Config.isTelegramEnabled()){
             TelegramClient().sendMessage(message)
         }
     }

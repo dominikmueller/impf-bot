@@ -2,6 +2,13 @@ package de.tfr.impf.page
 
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.openqa.selenium.support.ui.FluentWait
+
+import org.openqa.selenium.support.ui.Wait
+
+
+
 
 class LocationPage(driver: WebDriver) : AbstractPage(driver) {
 
@@ -38,7 +45,10 @@ class LocationPage(driver: WebDriver) : AbstractPage(driver) {
     }
 
     fun enterAge(age: Int) {
-        findBy("//input[@formcontrolname='age']").sendKeys("" + age)
+        var input = findBy("//input[@formcontrolname='age']")
+        input.click()
+        sendKeys(input, "" + age)
+        //input.sendKeys("" + age)
     }
 
     /**
@@ -51,7 +61,11 @@ class LocationPage(driver: WebDriver) : AbstractPage(driver) {
 
     fun codeField(index: Int) = findAnyBy("//input[@type='text' and @data-index='$index']")
 
-    private fun fillCodeField(index: Int, code: String) = codeField(index)?.sendKeys(code)
+    private fun fillCodeField(index: Int, code: String) {
+        codeField(index)?.click()
+        //sendKeys(codeField(index), code)
+        codeField(index)?.sendKeys(code)
+    }
 
     fun enterCodeSegment0(code: String) = fillCodeField(0, code)
     fun enterCodeSegment1(code: String) = fillCodeField(1, code)
@@ -73,4 +87,16 @@ class LocationPage(driver: WebDriver) : AbstractPage(driver) {
     fun hasVacError(): Boolean =
         findAll("//span[contains(@class, 'text-pre-wrap') and contains(text(), 'Fehler')]").isNotEmpty()
 
+
+    fun sendKeys(element: WebElement?, keys: String) {
+        val wait: Wait<*> = FluentWait<Any?>(driver)
+            .ignoring(NoSuchElementException::class.java)
+
+
+        for (i in 0 until keys.length) {
+            element?.sendKeys(Character.toString(keys[i]))
+            wait.until {ExpectedConditions.attributeContains(element, "value", keys.substring(0, i))}
+        }
+    }
 }
+
